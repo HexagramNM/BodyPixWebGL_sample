@@ -3,8 +3,6 @@ var virtualBackCanvasSize = {width: 480, height: 360};
 var virtualBackTextureSize = 512;
 var mapTextureXToCanvas = new Array(virtualBackTextureSize);
 var mapTextureYToCanvas = new Array(virtualBackTextureSize);
-var mapTextureEdgeX = new Array(virtualBackTextureSize);
-var mapTextureEdgeY = new Array(virtualBackTextureSize);
 
 var bodyPixNet = null;
 var videoComponent = null;
