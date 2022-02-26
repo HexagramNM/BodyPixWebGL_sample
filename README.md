@@ -5,4 +5,4 @@ BodyPixで背景マスクをした映像をWebGLのテクスチャとして流�
 
 BodyPixで背景を消した映像を非表示キャンバスに送り、そのキャンバスからWebGLのテクスチャを作成することで、WebGL上にも表示しています。
 
-WebGLでの行列計算に[minMatrix.js](https://wgld.org/d/library/l001.html)を使用しております。
+WebGLでの行列計算に[minMatrix.js](https://wgld.org/d/library/l001.html)を使用しております。minMatrix.jsはライセンスについて完全にフリーだそうなので、このリポジトリ内のコードは自由に使用していただいて大丈夫です。
