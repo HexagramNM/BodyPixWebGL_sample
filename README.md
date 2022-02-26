@@ -1,0 +1,2 @@
+# BodyPixWebGL_sample
+BodyPixで背景マスクをした映像をWebGLのテクスチャとして流すサンプル
