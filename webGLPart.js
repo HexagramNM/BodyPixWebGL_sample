@@ -47,12 +47,11 @@ function create_ibo(data) {
 	return ibo;
 }
 
-function create_texture_from_canvas(canvasId, pixelSize, number) {
+function create_texture_from_canvas(canvasId, number) {
 	if (number >= texture_max) {
 		return;
 	}
 	var sourceCanvas = document.getElementById(canvasId);
-	var sourceCanvasCtx = sourceCanvas.getContext("2d");
 	var tex = gl.createTexture();
 	dynamicTextureSetting();
 	texture[number] = tex;
@@ -62,7 +61,7 @@ function create_texture_from_canvas(canvasId, pixelSize, number) {
 	function dynamicTextureSetting() {
 		gl.activeTexture(gl["TEXTURE" + number.toString()]);
 		gl.bindTexture(gl.TEXTURE_2D, tex);
-		gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, sourceCanvasCtx.getImageData(0, 0, pixelSize, pixelSize));
+		gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, sourceCanvas);
 		gl.generateMipmap(gl.TEXTURE_2D);
 		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST_MIPMAP_LINEAR);
 		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR)
@@ -168,8 +167,7 @@ async function webGLPart_init(micStream) {
 	uniLocation[3] = gl.getUniformLocation(prg, 'texture');
 	uniLocation[4] = gl.getUniformLocation(prg, 'globalColor');
 
-	//virtualBackTextureSizeはbodyPixPart.js内の変数
-	create_texture_from_canvas("virtualBackTexture", virtualBackTextureSize, 0);
+	create_texture_from_canvas("virtualBackTexture", 0);
 
 	m.lookAt([0.0, 0.0, -18.0], [0.0, 0.0, 0.0], [0, 1, 0], vMatrix);
 	m.perspective(60.0, c.width/c.height, 1.0, 100, pMatrix);

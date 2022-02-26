@@ -28,10 +28,10 @@ async function BodyPixWebGL_startProcess() {
         return;
     }
 
-    await webGLPart_init();
     await BodyPixPart_init(mediaStream);
-    webGLPart_main();
+    await webGLPart_init();
     BodyPixPart_main();
+    webGLPart_main();
 }
 
 function BodyPixWebGL_main() {
