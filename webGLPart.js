@@ -189,8 +189,8 @@ function webGLPart_drawCapture() {
 	gl.vertexAttribPointer(attLocation[2], attStride[2], gl.FLOAT, false, 0, 0);
 	gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, index_ibo);
 
-	//virtualBackCanvasSizeはbodyPixPart.js内の変数
-	var aspect = virtualBackCanvasSize.height / virtualBackCanvasSize.width;
+	//intermediateCanvasSizeはbodyPixPart.js内の変数
+	var aspect = intermediateCanvasSize.height / intermediateCanvasSize.width;
 	m.identity(mMatrix);
 	m.translate(mMatrix, [0.0, 0.0, -6.0], mMatrix);
 	m.rotate(mMatrix, 5.0 * Math.PI / 6.0, [0.0, 1.0, 0.0], mMatrix);

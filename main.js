@@ -17,9 +17,9 @@ async function BodyPixWebGL_startProcess() {
         mediaStream = await navigator.mediaDevices.getUserMedia({
             audio: false,
             video: {
-                //virtualBackCanvasSizeはbodyPixPart.jsからの変数
-                width: {ideal: virtualBackCanvasSize[0]},
-                height: {ideal: virtualBackCanvasSize[1]}
+                //intermediateCanvasSizeはbodyPixPart.jsからの変数
+                width: {ideal: intermediateCanvasSize[0]},
+                height: {ideal: intermediateCanvasSize[1]}
             }
         });
     }

@@ -1,5 +1,5 @@
 //設定変数
-var virtualBackCanvasSize = {width: 480, height: 360};
+var intermediateCanvasSize = {width: 480, height: 360};
 var virtualBackTextureSize = 512;
 var mapTextureXToCanvas = new Array(virtualBackTextureSize);
 var mapTextureYToCanvas = new Array(virtualBackTextureSize);
@@ -21,7 +21,7 @@ function BodyPixPart_drawTextureCanvas(i_ctxInputImage, i_processedSegmentResult
     var outputBytes = outputImageData.data;
     var outputPixIdx = 0;
     for (var y = 0; y < virtualBackTextureSize; y++) {
-        var yInputIdx = mapTextureYToCanvas[y] * virtualBackCanvasSize.width;
+        var yInputIdx = mapTextureYToCanvas[y] * intermediateCanvasSize.width;
         for (var x = 0; x < virtualBackTextureSize; x++) {
             var inputPixIdx = yInputIdx + mapTextureXToCanvas[x];
             var byteBaseInputIdx = 4 * inputPixIdx;
@@ -45,8 +45,8 @@ function BodyPixPart_drawTextureCanvas(i_ctxInputImage, i_processedSegmentResult
 
 async function BodyPixPart_init(videoStream) {
     for (var idx = 0; idx < virtualBackTextureSize; idx++) {
-        mapTextureXToCanvas[idx] = parseInt(idx * virtualBackCanvasSize.width / virtualBackTextureSize + 0.5);
-        mapTextureYToCanvas[idx] = parseInt(idx * virtualBackCanvasSize.height / virtualBackTextureSize + 0.5);
+        mapTextureXToCanvas[idx] = parseInt(idx * intermediateCanvasSize.width / virtualBackTextureSize + 0.5);
+        mapTextureYToCanvas[idx] = parseInt(idx * intermediateCanvasSize.height / virtualBackTextureSize + 0.5);
     }
 
     virtualBackTextureCanvas = document.getElementById("virtualBackTexture");
@@ -55,8 +55,8 @@ async function BodyPixPart_init(videoStream) {
     virtualBackTextureCanvasCtx = virtualBackTextureCanvas.getContext("2d");
 
     intermediateCanvas = document.getElementById("intermediate");
-    intermediateCanvas.width = virtualBackCanvasSize.width;
-    intermediateCanvas.height = virtualBackCanvasSize.height;
+    intermediateCanvas.width = intermediateCanvasSize.width;
+    intermediateCanvas.height = intermediateCanvasSize.height;
     intermediateCanvasCtx = intermediateCanvas.getContext("2d");
 
     bodyPixNet = await bodyPix.load( {
@@ -66,8 +66,8 @@ async function BodyPixPart_init(videoStream) {
         quantBytes: 4
     });
     videoComponent = document.getElementById("video");
-    videoComponent.width = virtualBackCanvasSize.width;
-    videoComponent.height = virtualBackCanvasSize.height;
+    videoComponent.width = intermediateCanvasSize.width;
+    videoComponent.height = intermediateCanvasSize.height;
     videoComponent.autoplay = true;
     videoComponent.srcObject = videoStream;
 
@@ -77,8 +77,8 @@ async function BodyPixPart_init(videoStream) {
 
 async function BodyPixPart_main() {
     var startTime = performance.now();
-    var ctxIntermediateImage = intermediateCanvasCtx.getImageData(0, 0, virtualBackCanvasSize.width, virtualBackCanvasSize.height);
-    intermediateCanvasCtx.drawImage(videoComponent, 0, 0, virtualBackCanvasSize.width, virtualBackCanvasSize.height);
+    var ctxIntermediateImage = intermediateCanvasCtx.getImageData(0, 0, intermediateCanvasSize.width, intermediateCanvasSize.height);
+    intermediateCanvasCtx.drawImage(videoComponent, 0, 0, intermediateCanvasSize.width, intermediateCanvasSize.height);
 
     var bodyPixPromise = bodyPixNet.segmentPerson(intermediateCanvas, {
         flipHorizontal: false
