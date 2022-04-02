@@ -10,6 +10,10 @@ var intermediateCanvas = null;
 var intermediateCanvasCtx = null;
 var virtualBackTextureCanvas = null;
 var virtualBackTextureCanvasCtx = null;
+var virtualBackOutputImageBuf = new ArrayBuffer(virtualBackTextureSize * virtualBackTextureSize * 4);
+var virtualBackOutputImageBuf8 = new Uint8ClampedArray(virtualBackOutputImageBuf);
+var virtualBackOutputImageData = new Uint32Array(virtualBackOutputImageBuf);
+var virtualBackOutputImage = new ImageData(virtualBackTextureSize, virtualBackTextureSize);
 var processedSegmentResult = null;
 var bodyPixTimeSum = 0.0;
 var bodyPixTimeCount = 0;
@@ -17,9 +21,10 @@ var bodyPixTimeSamples = 30;
 
 function BodyPixPart_drawTextureCanvas(i_ctxInputImage, i_processedSegmentResult) {
     var inputBytes = i_ctxInputImage.data;
-    var outputImageData = new ImageData(virtualBackTextureSize, virtualBackTextureSize);
-    var outputBytes = outputImageData.data;
+
     var outputPixIdx = 0;
+    var resultColor = [0.0, 0.0, 0.0, 0.0]
+    var resultColorUint32 = 0;
     for (var y = 0; y < virtualBackTextureSize; y++) {
         var yInputIdx = mapTextureYToCanvas[y] * intermediateCanvasSize.width;
         for (var x = 0; x < virtualBackTextureSize; x++) {
@@ -27,20 +32,22 @@ function BodyPixPart_drawTextureCanvas(i_ctxInputImage, i_processedSegmentResult
             var byteBaseInputIdx = 4 * inputPixIdx;
             var byteBaseOutputIdx = 4 * outputPixIdx;
 
-            for (var colorIdx = 0; colorIdx < 3; colorIdx++) {
-                outputBytes[byteBaseOutputIdx + colorIdx] = inputBytes[byteBaseInputIdx + colorIdx]
-            }
             if (i_processedSegmentResult.data[inputPixIdx] == 1) {
-                outputBytes[byteBaseOutputIdx + 3] = 255;
+                for (var colorIdx = 0; colorIdx < 3; colorIdx++) {
+                    resultColor[colorIdx] = inputBytes[byteBaseInputIdx + colorIdx]
+                }
+                resultColor[3] = 255;
+                resultColorUint32 = (resultColor[0] | (resultColor[1] << 8) | (resultColor[2] << 16) | (resultColor[3] << 24));
             }
             else {
-                outputBytes[byteBaseOutputIdx + 3] = 0;
+                resultColorUint32 = 0x00;
             }
+            virtualBackOutputImageData[outputPixIdx] = resultColorUint32;
             outputPixIdx++;
         }
     }
-    outputImageData.data = outputBytes;
-    virtualBackTextureCanvasCtx.putImageData(outputImageData, 0, 0);
+    virtualBackOutputImage.data.set(virtualBackOutputImageBuf8);
+    virtualBackTextureCanvasCtx.putImageData(virtualBackOutputImage, 0, 0);
 }
 
 async function BodyPixPart_init(videoStream) {
